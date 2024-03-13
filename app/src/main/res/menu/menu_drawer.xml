@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_loaiTraiCay"
+        android:icon="@drawable/loaisan"
+        android:title="Loại trái cây"/>
+
+    <item android:id="@+id/nav_sanPham"
+        android:icon="@drawable/san"
+        android:title="Sản phẩm"/>
+
+    <item android:id="@+id/nav_nhanVien"
+        android:icon="@drawable/nhanvien"
+        android:title="Nhân viên"/>
+
+
+    <item android:id="@+id/nav_khachHang"
+        android:icon="@drawable/khachhang"
+        android:title="Khách hàng"/>
+
+    <item android:id="@+id/nav_hoaDon"
+        android:icon="@drawable/hoadon"
+        android:title="Hóa đơn"/>
+
+    <item android:id="@+id/nav_dangXuat"
+        android:icon="@drawable/dangxuat"
+        android:title="Đăng xuất"/>
+
+
+    <group android:checkableBehavior="single">
+        <item android:title="Liên hệ">
+            <menu>
+                <item android:id="@+id/nav_hotline"
+                    android:icon="@drawable/hotline"
+                    android:title="Hotline"/>
+
+
+                <item android:id="@+id/nav_facebook"
+                    android:icon="@drawable/fb"
+                    android:title="Facebook"/>
+
+                <item android:id="@+id/nav_doiMK"
+                    android:icon="@drawable/doimk"
+                    android:title="Đổi mật khẩu"/>
+            </menu>
+        </item>
+    </group>
+
+
+</menu>
