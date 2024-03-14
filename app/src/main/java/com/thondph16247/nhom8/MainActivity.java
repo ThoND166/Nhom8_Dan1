@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thondph16247.nhom8.Activitys.DangNhapActivity;
+import com.thondph16247.nhom8.Fragments.DoanhThu_Frag;
+import com.thondph16247.nhom8.Fragments.GioHang_Frag;
 import com.thondph16247.nhom8.Fragments.HoaDon_Frag;
 import com.thondph16247.nhom8.Fragments.KhachHang_Frag;
 import com.thondph16247.nhom8.Fragments.LoaiTraiCay_Frag;
@@ -89,6 +91,14 @@ public class MainActivity extends AppCompatActivity {
                 else  if(item.getItemId() ==R.id.nav_hoaDon ){
                     fr = new HoaDon_Frag();
                     mtoolbar001.setTitle("Hóa đơn");
+                }
+                else  if(item.getItemId() ==R.id.nav_gioHang ){
+                    fr = new GioHang_Frag();
+                    mtoolbar001.setTitle("Giỏ hàng");
+                }
+                else  if(item.getItemId() ==R.id.nav_doanhThu ){
+                    fr = new DoanhThu_Frag();
+                    mtoolbar001.setTitle("Doanh Thu");
                 }
                 else  if(item.getItemId() ==R.id.nav_dangXuat ){
                     DangXuat();
