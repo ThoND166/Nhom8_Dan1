@@ -13,12 +13,21 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE tb_dky (\n" +
-                "    id       INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "    tenDN     TEXT    NOT NULL,\n" +
-                "    matKhau    TEXT    NOT NULL" +
-                ")";
-        db.execSQL(sql);
+        // Đăng ký, đăng nhập nhé
+        db.execSQL("CREATE TABLE tb_dky (id INTEGER PRIMARY KEY AUTOINCREMENT, tenDN TEXT NOT NULL, matKhau TEXT NOT NULL)");
+        db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('admin', 'admin')");
+        db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('tho', '1')");
+
+
+        // loại trái cây
+        String sql_loaiTraiCay = "CREATE TABLE tb_loaiTraiCay (id INTEGER PRIMARY KEY AUTOINCREMENT, tenLoai TEXT NOT NULL)";
+        db.execSQL(sql_loaiTraiCay);
+
+        String sql_insertData1 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Nho')";
+        String sql_insertData2 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Táo')";
+
+        db.execSQL(sql_insertData1);
+        db.execSQL(sql_insertData2);
     }
 
     @Override
