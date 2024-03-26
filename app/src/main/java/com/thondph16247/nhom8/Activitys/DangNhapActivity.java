@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,8 @@ public class DangNhapActivity extends AppCompatActivity {
     TextInputEditText edt_TenDn, edt_matKhau;
     CheckBox chkLuuMK;
 
+    Spinner spn_quyen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +35,14 @@ public class DangNhapActivity extends AppCompatActivity {
         edt_matKhau = findViewById(R.id.edt_MatKhau);
         edt_TenDn = findViewById(R.id.edt_TenDangNhap);
         chkLuuMK = findViewById(R.id.chk_luumk);
+        spn_quyen = findViewById(R.id.spn_quyen);
 
-        loadLoginInfo(); // Load saved login info
+        String[] quyen = new String[]{"Admin", "Người dùng"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, quyen);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spn_quyen.setAdapter(adapter);
+
+        loadLoginInfo();
 
         btnDangnhap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,20 +52,37 @@ public class DangNhapActivity extends AppCompatActivity {
                 DangKyDAO dao = new DangKyDAO(getApplicationContext());
                 boolean loggedIn = dao.checkLogin(tenDN, mk);
 
+                String selectedRole = spn_quyen.getSelectedItem().toString();
+                boolean isAdmin = "Admin".equals(selectedRole);
+
                 if (chkLuuMK.isChecked()) {
                     saveLoginInfo(tenDN, mk);
+                    saveLoginInfo(isAdmin);
                 } else {
                     clearLoginInfo();
                 }
 
-                if (loggedIn) {
-                    Toast.makeText(getApplicationContext(),"Đăng nhập thành công",Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                // Kiểm tra nếu tài khoản đăng nhập là admin và cả tenDN và mk đều là "admin"
+                if (isAdmin && "admin".equalsIgnoreCase(tenDN) && "admin".equalsIgnoreCase(mk)) {
+                    if (loggedIn) {
+                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
+                    }
+                } else if (!isAdmin) {
+                    if (loggedIn) {
+                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(getApplicationContext(),"Sai tài khoản hoặc mật khẩu",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
 
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +118,13 @@ public class DangNhapActivity extends AppCompatActivity {
         editor.remove("tenDN");
         editor.remove("matKhau");
         editor.remove("isRemembered");
+        editor.apply();
+    }
+
+    private void saveLoginInfo(boolean isAdmin) {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isAdmin", isAdmin);
         editor.apply();
     }
 }

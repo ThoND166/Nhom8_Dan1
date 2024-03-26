@@ -8,9 +8,9 @@
         android:icon="@drawable/san"
         android:title="Sản phẩm"/>
 
-    <item android:id="@+id/nav_nhanVien"
-        android:icon="@drawable/nhanvien"
-        android:title="Nhân viên"/>
+<!--    <item android:id="@+id/nav_nhanVien"-->
+<!--        android:icon="@drawable/nhanvien"-->
+<!--        android:title="Nhân viên"/>-->
 
 
     <item android:id="@+id/nav_khachHang"
@@ -21,9 +21,9 @@
         android:icon="@drawable/hoadon"
         android:title="Hóa đơn"/>
 
-    <item android:id="@+id/nav_gioHang"
-        android:icon="@drawable/giohang"
-        android:title="Giỏ hàng"/>
+<!--    <item android:id="@+id/nav_gioHang"-->
+<!--        android:icon="@drawable/giohang"-->
+<!--        android:title="Giỏ hàng"/>-->
 
     <item android:id="@+id/nav_doanhThu"
         android:icon="@drawable/doanhthu"
@@ -35,15 +35,6 @@
     <group android:checkableBehavior="single">
         <item android:title="Liên hệ">
             <menu>
-                <item android:id="@+id/nav_hotline"
-                    android:icon="@drawable/hotline"
-                    android:title="Hotline"/>
-
-
-                <item android:id="@+id/nav_facebook"
-                    android:icon="@drawable/fb"
-                    android:title="Facebook"/>
-
                 <item android:id="@+id/nav_doiMK"
                     android:icon="@drawable/doimk"
                     android:title="Đổi mật khẩu"/>
