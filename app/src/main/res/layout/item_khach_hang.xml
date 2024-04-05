@@ -66,7 +66,7 @@
 
 
                 <ImageView
-                    android:layout_width="60px"
+                    android:layout_width="61px"
                     android:layout_height="60px"
                     android:src="@drawable/baseline_delete_24"
                     android:id="@+id/img_xoa_khachHang"/>

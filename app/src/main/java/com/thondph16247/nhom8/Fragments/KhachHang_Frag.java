@@ -39,5 +39,5 @@ public class KhachHang_Frag extends Fragment  {
         rcv_khachHang.setAdapter(khachHangAdapter);
         return view;
     }
-
+//trl
 }

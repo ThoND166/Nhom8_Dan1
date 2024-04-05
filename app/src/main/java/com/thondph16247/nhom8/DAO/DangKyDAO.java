@@ -77,4 +77,5 @@ public class DangKyDAO {
         int kq = database.delete("tb_dky","id="+dangKyDTO.getId(),null);
         return kq;
     }
+    //trl
 }
