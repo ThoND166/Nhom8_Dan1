@@ -18,6 +18,16 @@ public class Dbhelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('admin', 'admin')");
         db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('tho', '1')");
 
+        //bảng snar phẩm
+        db.execSQL("CREATE TABLE tb_sanPham (id INTEGER PRIMARY KEY AUTOINCREMENT, tenSP TEXT, soLuong TEXT, giaTien TEXT, moTa TEXT, tenLoai TEXT);");
+        db.execSQL("INSERT INTO tb_sanPham (tenSP, soLuong, giaTien,moTa,tenLoai) VALUES ('Táo xanh', '200', '200000', 'Táo ngon', 'Táo')");
+        db.execSQL("INSERT INTO tb_sanPham (tenSP, soLuong, giaTien,moTa,tenLoai) VALUES ('Nho tàu', '10', '24500', 'Nho ngon', 'Nho')");
+
+        //bảng giỏ hàng
+        db.execSQL("CREATE TABLE tb_gioHang (id INTEGER PRIMARY KEY AUTOINCREMENT, tenSP TEXT, giaTien TEXT, soLuongGioHang TEXT, giaTienMoi TEXT);");
+
+
+
 
         // loại trái cây
         String sql_loaiTraiCay = "CREATE TABLE tb_loaiTraiCay (id INTEGER PRIMARY KEY AUTOINCREMENT, tenLoai TEXT NOT NULL)";
@@ -25,7 +35,6 @@ public class Dbhelper extends SQLiteOpenHelper {
 
         String sql_insertData1 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Nho')";
         String sql_insertData2 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Táo')";
-
         db.execSQL(sql_insertData1);
         db.execSQL(sql_insertData2);
     }

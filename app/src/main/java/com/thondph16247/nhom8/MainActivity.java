@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             private void ShowDialog() {
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialog_doipass);
+
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.show();
             }

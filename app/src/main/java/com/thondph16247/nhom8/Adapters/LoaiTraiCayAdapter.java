@@ -33,6 +33,12 @@ public class LoaiTraiCayAdapter extends  RecyclerView.Adapter<LoaiTraiCayAdapter
         this.listTraiCay = listTraiCay;
     }
 
+    public void updateData(ArrayList<LoaiTraiCayDTO> newData) {
+        listTraiCay.clear();
+        listTraiCay.addAll(newData);
+        notifyDataSetChanged(); // Cập nhật RecyclerView
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -1,11 +1,16 @@
 package com.thondph16247.nhom8.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,17 +35,56 @@ public class LoaiTraiCay_Frag extends Fragment {
     LoaiTraiCayDAO loaiTraiCayDAO;
     LoaiTraiCayAdapter loaiTraiCayAdapter;
     ArrayList<LoaiTraiCayDTO> listLoai;
+    EditText edt_search_loaiTraiCay;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.loai_trai_cay_fragment, container, false);
         rcv_loaiTraiCay = view.findViewById(R.id.rcv_loaiTraiCay);
         loaiTraiCayDAO = new LoaiTraiCayDAO(getContext());
+
+        edt_search_loaiTraiCay = view.findViewById(R.id.edt_ser_loaiTraiCay);
         listLoai = loaiTraiCayDAO.getList();
-        loaiTraiCayAdapter = new LoaiTraiCayAdapter(getContext(),listLoai);
+        loaiTraiCayAdapter = new LoaiTraiCayAdapter(getContext(), listLoai);
         rcv_loaiTraiCay.setLayoutManager(new LinearLayoutManager(getContext()));
         rcv_loaiTraiCay.setAdapter(loaiTraiCayAdapter);
         ImageView img_add = view.findViewById(R.id.img_add_loaiTraiCay);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        boolean isAdmin = sharedPreferences.getBoolean("isAdmin", false);
+
+        if (!isAdmin) {
+            img_add.setVisibility(View.GONE); // Ẩn ImageView nếu không phải admin
+        }
+
+        edt_search_loaiTraiCay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchText = s.toString().toLowerCase().trim();
+                ArrayList<LoaiTraiCayDTO> ds = new ArrayList<>();
+
+                if (searchText.isEmpty()) {
+                    loaiTraiCayAdapter.updateData(loaiTraiCayDAO.getList()); // Hiển thị lại toàn bộ danh sách khi ô EditText trống
+                    return;
+                }
+
+                for (LoaiTraiCayDTO tenLoai : loaiTraiCayDAO.getList()) {
+                    if (tenLoai.getTenLoai().toLowerCase().contains(searchText)) {
+                        ds.add(tenLoai);
+                    }
+                }
+
+                loaiTraiCayAdapter.updateData(ds); // Cập nhật dữ liệu hiển thị trong RecyclerView
+            }
+        });
         img_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
