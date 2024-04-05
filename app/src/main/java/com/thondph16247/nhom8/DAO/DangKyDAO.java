@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.thondph16247.nhom8.DTO.DangKyDTO;
+import com.thondph16247.nhom8.DTO.LoaiTraiCayDTO;
 import com.thondph16247.nhom8.Databases.Dbhelper;
+
+import java.util.ArrayList;
 
 public class DangKyDAO {
     SQLiteDatabase database;
@@ -25,11 +28,18 @@ public class DangKyDAO {
         return kq;
     }
 
-    // Thêm phương thức để lấy thông tin đăng nhập từ cơ sở dữ liệu
+    // Thêm phương thức update để cập nhật thông tin đăng ký
+    public int update(DangKyDTO dto) {
+        ContentValues values = new ContentValues();
+        values.put("tenDN", dto.getTenDN());
+        values.put("matKhau", dto.getMatKhau());
+        return database.update("tb_dky", values, "id = ?", new String[]{String.valueOf(dto.getId())});
+    }
+
     public boolean checkLogin(String tenDN, String mk) {
         String[] columns = {"id"};
 
-        String selection = "tenDN = ? AND matKhau = ?";
+        String selection = "tenDN                 = ? AND matKhau = ?";
         String[] selectionArgs = {tenDN, mk};
 
         Cursor cursor = database.query("tb_dky", columns, selection, selectionArgs, null, null, null);
@@ -42,7 +52,30 @@ public class DangKyDAO {
 
         return loginSuccessful;
     }
-    
 
+    public ArrayList<DangKyDTO> getList(){
+        ArrayList<DangKyDTO> listKH = new ArrayList<>();
+        Cursor cursor = database.rawQuery("SELECT * FROM tb_dky ORDER BY id ASC", null);
 
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                DangKyDTO dangKyDTO = new DangKyDTO();
+                dangKyDTO.setId(cursor.getInt(0));
+                dangKyDTO.setTenDN(cursor.getString(1));
+                dangKyDTO.setMatKhau(cursor.getString(2));
+
+                listKH.add(dangKyDTO);
+
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return listKH;
+    }
+
+    public  int XoaKhachHang(DangKyDTO dangKyDTO){
+
+        int kq = database.delete("tb_dky","id="+dangKyDTO.getId(),null);
+        return kq;
+    }
+    //trl
 }

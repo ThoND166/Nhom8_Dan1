@@ -29,7 +29,7 @@ import com.thondph16247.nhom8.Fragments.KhachHang_Frag;
 import com.thondph16247.nhom8.Fragments.LoaiTraiCay_Frag;
 import com.thondph16247.nhom8.Fragments.SanPham_Frag;
 
-public class MainActivity extends AppCompatActivity {
+    public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout001;
     Toolbar mtoolbar001;
     NavigationView nav001;
@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
             private void ShowDialog() {
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialog_doipass);
-
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.show();
             }
