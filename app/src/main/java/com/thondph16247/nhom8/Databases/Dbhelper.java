@@ -13,12 +13,35 @@ public class Dbhelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE tb_dky (\n" +
-                "    id       INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                "    tenDN     TEXT    NOT NULL,\n" +
-                "    matKhau    TEXT    NOT NULL" +
-                ")";
-        db.execSQL(sql);
+        // Đăng ký, đăng nhập nhé
+        db.execSQL("CREATE TABLE tb_dky (id INTEGER PRIMARY KEY AUTOINCREMENT, tenDN TEXT NOT NULL, matKhau TEXT NOT NULL)");
+        db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('admin', 'admin')");
+        db.execSQL("INSERT INTO tb_dky (tenDN, matKhau) VALUES ('tho', '1')");
+
+        //bảng snar phẩm
+        db.execSQL("CREATE TABLE tb_sanPham (id INTEGER PRIMARY KEY AUTOINCREMENT, tenSP TEXT, soLuong TEXT, giaTien TEXT, moTa TEXT, tenLoai TEXT);");
+        db.execSQL("INSERT INTO tb_sanPham (tenSP, soLuong, giaTien,moTa,tenLoai) VALUES ('Táo xanh', '200', '200000', 'Táo ngon', 'Táo')");
+        db.execSQL("INSERT INTO tb_sanPham (tenSP, soLuong, giaTien,moTa,tenLoai) VALUES ('Nho tàu', '10', '24500', 'Nho ngon', 'Nho')");
+
+        //bảng giỏ hàng
+        db.execSQL("CREATE TABLE tb_gioHang (id INTEGER PRIMARY KEY AUTOINCREMENT, tenSP TEXT, giaTien TEXT, soLuongGioHang TEXT, giaTienMoi TEXT);");
+
+//        //baảng thanh toán
+        db.execSQL("CREATE TABLE tb_hoaDon (id INTEGER PRIMARY KEY AUTOINCREMENT, tenDN TEXT, tenSP TEXT, soLuong TEXT, giaTienMoi TEXT);");
+        db.execSQL("INSERT INTO tb_hoaDon (tenDN, tenSP, soLuong, giaTienMoi) VALUES ('user1', 'Sản phẩm A', '3', '120000');");
+        db.execSQL("INSERT INTO tb_hoaDon (tenDN, tenSP, soLuong, giaTienMoi) VALUES ('user2', 'Sản phẩm B', '2', '150000');");
+
+
+
+
+        // loại trái cây
+        String sql_loaiTraiCay = "CREATE TABLE tb_loaiTraiCay (id INTEGER PRIMARY KEY AUTOINCREMENT, tenLoai TEXT NOT NULL)";
+        db.execSQL(sql_loaiTraiCay);
+
+        String sql_insertData1 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Nho')";
+        String sql_insertData2 = "INSERT INTO tb_loaiTraiCay (tenLoai) VALUES ('Táo')";
+        db.execSQL(sql_insertData1);
+        db.execSQL(sql_insertData2);
     }
 
     @Override
