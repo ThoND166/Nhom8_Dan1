@@ -1,6 +1,8 @@
 package com.thondph16247.nhom8.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +26,7 @@ import com.thondph16247.nhom8.Adapters.LoaiTraiCayAdapter;
 import com.thondph16247.nhom8.DAO.GioHangDAO;
 import com.thondph16247.nhom8.DAO.LoaiTraiCayDAO;
 import com.thondph16247.nhom8.DTO.GioHangDTO;
+import com.thondph16247.nhom8.DTO.HoaDonDTO;
 import com.thondph16247.nhom8.DTO.LoaiTraiCayDTO;
 import com.thondph16247.nhom8.R;
 
@@ -38,6 +43,8 @@ public class GioHang_Frag extends Fragment {
     private EditText edt_search_gioHang;
     private TextView tv_tongTien; // Thêm biến tham chiếu đến TextView tổng tiền
 
+    Button btn_thanhToan;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,6 +54,7 @@ public class GioHang_Frag extends Fragment {
         gioHangDAO = new GioHangDAO(getContext());
         edt_search_gioHang = view.findViewById(R.id.edt_ser_gioHang);
         tv_tongTien = view.findViewById(R.id.tv_tongTien); // Khởi tạo tham chiếu đến TextView tổng tiền
+        btn_thanhToan = view.findViewById(R.id.btn_thanhToan);
 
         listGioHang = gioHangDAO.getList();
         gioHangAdapter = new GioHangAdapter(getContext(), listGioHang);
@@ -54,6 +62,26 @@ public class GioHang_Frag extends Fragment {
         rcv_gioHang.setAdapter(gioHangAdapter);
 
         updateTotalPrice(); // Cập nhật tổng tiền khi Fragment được khởi tạo
+
+
+        btn_thanhToan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Thông báo").setMessage("Bạn có muốn thanh toán không ?").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         edt_search_gioHang.addTextChangedListener(new TextWatcher() {
             @Override
