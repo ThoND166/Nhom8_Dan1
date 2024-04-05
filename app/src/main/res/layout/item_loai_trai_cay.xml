@@ -35,11 +35,13 @@
                 />
 
             <ImageView
+
                 android:id="@+id/img_sua_loaiTraiCay"
                 android:layout_width="wrap_content"
                 android:layout_height="60px"
                 android:layout_marginRight="30px"
                 android:src="@drawable/baseline_update_24" />
+
 
             <ImageView
                 android:layout_width="60px"
