@@ -3,6 +3,8 @@ package com.thondph16247.nhom8.Fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,12 +20,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thondph16247.nhom8.Adapters.GioHangAdapter;
+import com.thondph16247.nhom8.Adapters.HoaDonAdapter;
 import com.thondph16247.nhom8.Adapters.LoaiTraiCayAdapter;
 import com.thondph16247.nhom8.DAO.GioHangDAO;
+import com.thondph16247.nhom8.DAO.HoaDonDAO;
 import com.thondph16247.nhom8.DAO.LoaiTraiCayDAO;
 import com.thondph16247.nhom8.DTO.GioHangDTO;
 import com.thondph16247.nhom8.DTO.HoaDonDTO;
@@ -42,21 +48,27 @@ public class GioHang_Frag extends Fragment {
     private ArrayList<GioHangDTO> listGioHang;
     private EditText edt_search_gioHang;
     private TextView tv_tongTien; // Thêm biến tham chiếu đến TextView tổng tiền
+    HoaDonDAO hoaDonDAO;
 
     Button btn_thanhToan;
+    private ArrayList<HoaDonDTO> listHoaDon = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.gio_hang_fragment, container, false);
 
+
+
         rcv_gioHang = view.findViewById(R.id.rcv_gioHang);
         gioHangDAO = new GioHangDAO(getContext());
         edt_search_gioHang = view.findViewById(R.id.edt_ser_gioHang);
         tv_tongTien = view.findViewById(R.id.tv_tongTien); // Khởi tạo tham chiếu đến TextView tổng tiền
         btn_thanhToan = view.findViewById(R.id.btn_thanhToan);
+        hoaDonDAO = new HoaDonDAO(getContext());
 
         listGioHang = gioHangDAO.getList();
+        listHoaDon = hoaDonDAO.getList();
         gioHangAdapter = new GioHangAdapter(getContext(), listGioHang);
         rcv_gioHang.setLayoutManager(new LinearLayoutManager(getContext()));
         rcv_gioHang.setAdapter(gioHangAdapter);
@@ -71,7 +83,41 @@ public class GioHang_Frag extends Fragment {
                 builder.setTitle("Thông báo").setMessage("Bạn có muốn thanh toán không ?").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // Tạo hóa đơn từ giỏ hàng
+                        for (GioHangDTO gioHangDTO : listGioHang) {
+                            HoaDonDTO hoaDonDTO = new HoaDonDTO();
+                            hoaDonDTO.setTenDN("Tho");
+                            hoaDonDTO.setTenSP(gioHangDTO.getTenSP());
+                            hoaDonDTO.setSoLuong(gioHangDTO.getSoLuongGioHang());
+                            hoaDonDTO.setGiaTienMoi(gioHangDTO.getGiaTienMoi());
+                            // Thêm hóa đơn vào cơ sở dữ liệu
+                            long result = hoaDonDAO.themHoaDon(hoaDonDTO);
+                            if (result != -1) {
+                                listHoaDon.add(hoaDonDTO);
+                                Toast.makeText(getContext(),"Thanh toán thành công",Toast.LENGTH_SHORT).show();
+                            }
+                        }
 
+                        // Hiển thị danh sách hóa đơn trong RecyclerView
+                        HoaDonAdapter hoaDonAdapter = new HoaDonAdapter(getContext(), listHoaDon);
+                        rcv_gioHang.setLayoutManager(new LinearLayoutManager(getContext()));
+                        rcv_gioHang.setAdapter(hoaDonAdapter);
+
+                        // Xóa giỏ hàng sau khi đã thanh toán
+                        gioHangDAO.xoaTatCa();
+                        listGioHang.clear();
+                        gioHangAdapter.notifyDataSetChanged();
+
+                        // Cập nhật tổng tiền
+                        updateTotalPrice();
+
+                        // Chuyển sang fragment hóa đơn
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        HoaDon_Frag newFragment = new HoaDon_Frag(); // Khởi tạo fragment mới (cần thay thế bằng tên fragment thực tế của bạn)
+                        fragmentTransaction.replace(R.id.frag_container001, newFragment); // R.id.fragment_container là ID của container fragment trong layout của bạn
+                        fragmentTransaction.addToBackStack(null); // Để có thể quay trở lại fragment trước đó
+                        fragmentTransaction.commit();
                     }
                 }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
                     @Override
@@ -82,6 +128,9 @@ public class GioHang_Frag extends Fragment {
                 builder.show();
             }
         });
+
+
+
 
         edt_search_gioHang.addTextChangedListener(new TextWatcher() {
             @Override

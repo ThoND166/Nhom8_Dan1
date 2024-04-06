@@ -58,20 +58,26 @@ public class GioHangDAO {
     }
 
     public int XoaGioHang(GioHangDTO obj){
-        int  kq = database.delete("tb_gioHang", "id="+obj.getId(),null);
-        return kq;
+        int kq = database.delete("tb_gioHang", "id="+obj.getId(),null);
+        if (kq > 0) {
+            // Xóa thành công
+            return kq;
+        } else {
+            // Không có dữ liệu nào bị xóa
+            return -1;
+        }
     }
 
-    public long CapNhatGiaTienMoi(GioHangDTO obj) {
-        // Tính toán giaTienMoi
-        int giaTien = Integer.parseInt(obj.getGiaTien());
-        int soLuong = Integer.parseInt(obj.getSoLuongGioHang());
-        int giaTienMoi = giaTien * soLuong;
-
-        ContentValues values = new ContentValues();
-        values.put("giaTienMoi", String.valueOf(giaTienMoi));
-
-        long kq = database.update("tb_gioHang", values, "id=?", new String[]{String.valueOf(obj.getId())});
-        return kq;
+    public int xoaTatCa() {
+        int kq = database.delete("tb_gioHang", null, null);
+        if (kq > 0) {
+            // Xóa thành công
+            return kq;
+        } else {
+            // Không có dữ liệu nào bị xóa
+            return -1;
+        }
     }
+
+
 }

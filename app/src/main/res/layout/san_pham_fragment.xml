@@ -17,10 +17,6 @@
         android:background="@android:drawable/editbox_background"
         android:padding="12dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sản phẩm" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_sanPham"

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thondph16247.nhom8.DAO.GioHangDAO;
 import com.thondph16247.nhom8.DAO.HoaDonDAO;
+import com.thondph16247.nhom8.DTO.GioHangDTO;
 import com.thondph16247.nhom8.DTO.HoaDonDTO;
 import com.thondph16247.nhom8.R;
 
@@ -29,10 +31,10 @@ public class HoaDonAdapter extends  RecyclerView.Adapter<HoaDonAdapter.ViewHolde
         this.mContext = mContext;
         this.mList = mList;
     }
-    public void updateData(ArrayList<HoaDonDTO> newList) {
+    public void updateData(ArrayList<HoaDonDTO> newData) {
         mList.clear();
-        mList.addAll(newList);
-        notifyDataSetChanged();
+        mList.addAll(newData);
+        notifyDataSetChanged(); // Cập nhật RecyclerView
     }
 
 
@@ -44,6 +46,8 @@ public class HoaDonAdapter extends  RecyclerView.Adapter<HoaDonAdapter.ViewHolde
         return new HoaDonAdapter.ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
@@ -53,6 +57,15 @@ public class HoaDonAdapter extends  RecyclerView.Adapter<HoaDonAdapter.ViewHolde
         holder.txtGiaTien.setText("Thành tiền: " + hoaDonDTO.getGiaTienMoi()); // Sử dụng giaTienMoi thay vì giaTien
         holder.txtSoLuong.setText("Số lượng: " + hoaDonDTO.getSoLuong());
         holder.txtKH.setText("Tên khách Hàng: " + hoaDonDTO.getTenDN());
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        boolean isAdmin = sharedPreferences.getBoolean("isAdmin", false);
+
+        if (isAdmin) {
+            holder.img_delete.setVisibility(View.VISIBLE);
+        } else {
+            holder.img_delete.setVisibility(View.GONE);
+        }
 
         holder.img_delete.setOnClickListener(new View.OnClickListener() {
             @Override
