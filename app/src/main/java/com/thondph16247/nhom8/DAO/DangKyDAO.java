@@ -12,7 +12,7 @@ import com.thondph16247.nhom8.Databases.Dbhelper;
 import java.util.ArrayList;
 
 public class DangKyDAO {
-    SQLiteDatabase database;
+    static SQLiteDatabase database;
     Dbhelper dbHelper;
 
     public DangKyDAO(Context context) {
@@ -77,5 +77,36 @@ public class DangKyDAO {
         int kq = database.delete("tb_dky","id="+dangKyDTO.getId(),null);
         return kq;
     }
-    //trl
+    public static boolean checkOldPassword(String tenDN, String oldPassword) {
+        String[] columns = {"id"};
+
+        String selection = "tenDN = ? AND matKhau = ?";
+        String[] selectionArgs = {tenDN, oldPassword};
+
+        Cursor cursor = database.query("tb_dky", columns, selection, selectionArgs, null, null, null);
+
+        boolean passwordCorrect = cursor != null && cursor.moveToFirst();
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return passwordCorrect;
+    }
+    public boolean updatePassword(String tenDN, String newPassword) {
+        ContentValues values = new ContentValues();
+        values.put("matKhau", newPassword);
+
+        int affectedRows = database.update("tb_dky", values, "tenDN = ?", new String[]{tenDN});
+
+        // Kiểm tra xem có bao nhiêu hàng bị ảnh hưởng bởi việc cập nhật
+        if (affectedRows > 0) {
+            // Cập nhật thành công
+            return true;
+        } else {
+            // Cập nhật thất bại
+            return false;
+        }
+    }
+
 }

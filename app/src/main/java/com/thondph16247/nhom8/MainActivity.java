@@ -8,7 +8,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.thondph16247.nhom8.Activitys.DangNhapActivity;
+import com.thondph16247.nhom8.DAO.DangKyDAO;
 import com.thondph16247.nhom8.Fragments.ChinhSach_Frag;
 import com.thondph16247.nhom8.Fragments.DoanhThu_Frag;
 import com.thondph16247.nhom8.Fragments.Facebook_Frag;
@@ -143,6 +148,52 @@ import com.thondph16247.nhom8.Fragments.SanPham_Frag;
                 Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.dialog_doipass);
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                EditText oldPasswordEditText = dialog.findViewById(R.id.edt_mkCu);
+                EditText newPasswordEditText = dialog.findViewById(R.id.edt_mkMoi);
+                EditText confirmPasswordEditText = dialog.findViewById(R.id.edt_nlaiMkMoi);
+
+                Button changePasswordButton = dialog.findViewById(R.id.btn_add_mk);
+                changePasswordButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                        String tenDN = sharedPreferences.getString("tenDN", "");
+
+                        String oldPassword = oldPasswordEditText.getText().toString().trim();
+                        String newPassword = newPasswordEditText.getText().toString().trim();
+                        String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+                        DangKyDAO dangKyDAO = new DangKyDAO(MainActivity.this);
+
+                        // Kiểm tra mật khẩu cũ
+                        if (!DangKyDAO.checkOldPassword(tenDN, oldPassword)) {
+                            Toast.makeText(MainActivity.this, "Mật khẩu cũ không đúng", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        // Kiểm tra tính hợp lệ của mật khẩu mới
+                        if (newPassword.length() < 3) {
+                            Toast.makeText(MainActivity.this, "Mật khẩu mới phải chứa ít nhất 3 ký tự", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Kiểm tra mật khẩu mới và mật khẩu xác nhận có khớp nhau không
+                        if (!newPassword.equals(confirmPassword)) {
+                            Toast.makeText(MainActivity.this, "Mật khẩu mới và mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Thực hiện cập nhật mật khẩu mới vào cơ sở dữ liệu
+                        boolean updateResult = dangKyDAO.updatePassword(tenDN, newPassword);
+
+                        if (updateResult) {
+                            Toast.makeText(MainActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                        // Đóng dialog sau khi xử lý xong
+                        dialog.dismiss();
+                    }
+                });
                 dialog.show();
             }
         });
