@@ -13,7 +13,7 @@
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="match_parent"
-        android:layout_height="700px"
+        android:layout_height="500px"
         android:layout_marginTop="200px"
         android:layout_gravity="center"
         android:src="@drawable/img"/>
@@ -48,6 +48,23 @@
             android:layout_height="wrap_content"
             android:hint="Mật khẩu" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="clear_text"
+        app:startIconDrawable="@drawable/nhanvien"
+        android:layout_marginTop="50px">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_Gmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="Gmail"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <CheckBox
         android:id="@+id/chk_luumk"

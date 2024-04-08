@@ -11,9 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.thondph16247.nhom8.DAO.DangKyDAO;
 import com.thondph16247.nhom8.DTO.DangKyDTO;
-import com.thondph16247.nhom8.MainActivity;
 import com.thondph16247.nhom8.R;
-
 
 public class DangKyActivity extends AppCompatActivity {
     DangKyDAO dao;
@@ -28,6 +26,7 @@ public class DangKyActivity extends AppCompatActivity {
         TextInputEditText edt_tenDangNhap = findViewById(R.id.edt_TenDangNhap_dky);
         TextInputEditText edtMatKhau = findViewById(R.id.edt_matkhau_dky);
         TextInputEditText edtNhapLaiMk = findViewById(R.id.edt_nhaplaiMk_dky);
+        TextInputEditText edt_Gmail = findViewById(R.id.edt_Gmail_dky);
         Button btnOkDangKy = findViewById(R.id.btn_ok_dky);
         Button btnHuy = findViewById(R.id.btnHuy_dky);
 
@@ -44,22 +43,32 @@ public class DangKyActivity extends AppCompatActivity {
                 String matKhau = edtMatKhau.getText().toString();
                 String nhapLaiMk = edtNhapLaiMk.getText().toString();
                 String tenDN = edt_tenDangNhap.getText().toString();
+                String gmail = edt_Gmail.getText().toString();
 
                 if (matKhau.equals(nhapLaiMk)) {
-                    DangKyDTO dto = new DangKyDTO();
-                    dto.setMatKhau(matKhau);
-                    dto.setTenDN(tenDN);
+                    if (isValidEmail(gmail)) {
+                        DangKyDTO dto = new DangKyDTO();
+                        dto.setMatKhau(matKhau);
+                        dto.setTenDN(tenDN);
+                        dto.setGmail(gmail);
 
-                    long kq = dao.Them(dto);
-                    if (kq > 0) {
-                        startActivity(new Intent(DangKyActivity.this, DangNhapActivity.class));
-                        Toast.makeText(getApplicationContext(), "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                        long kq = dao.Them(dto);
+                        if (kq > 0) {
+                            startActivity(new Intent(DangKyActivity.this, DangNhapActivity.class));
+                            Toast.makeText(getApplicationContext(), "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Địa chỉ Gmail không hợp lệ", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Mật khẩu không trùng khớp", Toast.LENGTH_SHORT).show();
                 }
+            }
+
+            private boolean isValidEmail(CharSequence target) {
+                return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
             }
         });
 

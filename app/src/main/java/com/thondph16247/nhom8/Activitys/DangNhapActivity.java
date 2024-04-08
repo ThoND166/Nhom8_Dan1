@@ -20,7 +20,7 @@ import com.thondph16247.nhom8.R;
 
 public class DangNhapActivity extends AppCompatActivity {
     Button btnDangnhap, btnDangKy;
-    TextInputEditText edt_TenDn, edt_matKhau;
+    TextInputEditText edt_TenDn, edt_matKhau, edt_gmail;
     CheckBox chkLuuMK;
 
     Spinner spn_quyen;
@@ -34,6 +34,7 @@ public class DangNhapActivity extends AppCompatActivity {
         btnDangKy = findViewById(R.id.btn_Dangky);
         edt_matKhau = findViewById(R.id.edt_MatKhau);
         edt_TenDn = findViewById(R.id.edt_TenDangNhap);
+        edt_gmail = findViewById(R.id.edt_Gmail);
         chkLuuMK = findViewById(R.id.chk_luumk);
         spn_quyen = findViewById(R.id.spn_quyen);
 
@@ -49,40 +50,28 @@ public class DangNhapActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String tenDN = edt_TenDn.getText().toString();
                 String mk = edt_matKhau.getText().toString();
+                String gmail = edt_gmail.getText().toString();
                 DangKyDAO dao = new DangKyDAO(getApplicationContext());
-                boolean loggedIn = dao.checkLogin(tenDN, mk);
+                boolean loggedIn = dao.checkLogin(tenDN, mk, gmail);
 
                 String selectedRole = spn_quyen.getSelectedItem().toString();
                 boolean isAdmin = "Admin".equals(selectedRole);
 
                 if (chkLuuMK.isChecked()) {
-                    saveLoginInfo(tenDN, mk);
+                    saveLoginInfo(tenDN, mk, gmail);
                     saveLoginInfo(isAdmin);
                 } else {
                     clearLoginInfo();
                 }
 
-                // Kiểm tra nếu tài khoản đăng nhập là admin và cả tenDN và mk đều là "admin"
-                if (isAdmin && "admin".equalsIgnoreCase(tenDN) && "admin".equalsIgnoreCase(mk)) {
-                    if (loggedIn) {
-                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
-                    }
-                } else if (!isAdmin) {
-                    if (loggedIn) {
-                        startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
-                    }
+                if ((isAdmin && "admin".equalsIgnoreCase(tenDN) && "admin".equalsIgnoreCase(mk)) || (!isAdmin && loggedIn)) {
+                    startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
+                    finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
 
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,18 +85,21 @@ public class DangNhapActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         String tenDN = sharedPreferences.getString("tenDN", "");
         String matKhau = sharedPreferences.getString("matKhau", "");
+        String gmail = sharedPreferences.getString("gmail", "");
         boolean isRemembered = sharedPreferences.getBoolean("isRemembered", false);
 
         edt_TenDn.setText(tenDN);
         edt_matKhau.setText(matKhau);
+        edt_gmail.setText(gmail);
         chkLuuMK.setChecked(isRemembered);
     }
 
-    private void saveLoginInfo(String tenDN, String matKhau) {
+    private void saveLoginInfo(String tenDN, String matKhau, String gmail) {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("tenDN", tenDN);
         editor.putString("matKhau", matKhau);
+        editor.putString("gmail", gmail);
         editor.putBoolean("isRemembered", true);
         editor.apply();
     }
@@ -117,6 +109,7 @@ public class DangNhapActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("tenDN");
         editor.remove("matKhau");
+        editor.remove("gmail");
         editor.remove("isRemembered");
         editor.apply();
     }

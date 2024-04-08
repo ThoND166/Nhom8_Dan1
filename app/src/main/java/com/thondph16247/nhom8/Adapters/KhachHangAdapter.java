@@ -47,25 +47,25 @@ public class KhachHangAdapter extends RecyclerView.Adapter<KhachHangAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DangKyDTO dangKyDTO = mList.get(position);
         holder.txtTenDN.setText("Tên đăng nhập: " + dangKyDTO.getTenDN());
-        holder.txtMatKhau.setText("Mật khẩu: " + dangKyDTO.getMatKhau());
+        holder.txtGmail.setText("Gmail: " + dangKyDTO.getGmail());
 
         holder.imgXoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Cảnh báo").setMessage("Bạn có muốn xóa ?").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setTitle("Cảnh báo").setMessage("Bạn có muốn xóa?").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DangKyDAO dao = new DangKyDAO(mContext);
                         int kq = dao.XoaKhachHang(dangKyDTO);
-                        if( kq > 0){
+                        if (kq > 0) {
                             mList.clear();
                             mList.addAll(dao.getList());
                             notifyDataSetChanged();
-                            Toast.makeText(mContext,"Xóa thành công",Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }else
-                            Toast.makeText(mContext,"Xóa thất bại",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(mContext, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }).setNegativeButton("Không", new DialogInterface.OnClickListener() {
                     @Override
@@ -83,7 +83,7 @@ public class KhachHangAdapter extends RecyclerView.Adapter<KhachHangAdapter.View
                 Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.dialog_khach_hang);
                 TextInputEditText edtTenTK = dialog.findViewById(R.id.edt_khachhang);
-                TextInputEditText edtMatKhau = dialog.findViewById(R.id.edt_password);
+                TextInputEditText edtGmail = dialog.findViewById(R.id.edt_gmail);
                 Button btnOk = dialog.findViewById(R.id.btn_add_khachhang);
                 Button btnHuy = dialog.findViewById(R.id.btn_huy_khachhang);
 
@@ -92,13 +92,13 @@ public class KhachHangAdapter extends RecyclerView.Adapter<KhachHangAdapter.View
                     @Override
                     public void onClick(View v) {
                         String TenDN = edtTenTK.getText().toString();
-                        String matKhau = edtMatKhau.getText().toString();
-                        if (TenDN.isEmpty() || matKhau.isEmpty()){
+                        String Gmail = edtGmail.getText().toString();
+                        if (TenDN.isEmpty() || Gmail.isEmpty()){
                             Toast.makeText(mContext,"Vui lòng điền đầy đủ thông tin",Toast.LENGTH_SHORT).show();
                         }
                         else {
                             dangKyDTO.setTenDN(TenDN);
-                            dangKyDTO.setMatKhau(matKhau);
+                            dangKyDTO.setGmail(Gmail);
                             DangKyDAO dao = new DangKyDAO(mContext);
                             int kq = dao.update(dangKyDTO);
                             if( kq > 0){
@@ -135,17 +135,18 @@ public class KhachHangAdapter extends RecyclerView.Adapter<KhachHangAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTenDN, txtMatKhau;
+        TextView txtTenDN, txtGmail;
         ImageView imgSua, imgXoa;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTenDN = itemView.findViewById(R.id.txt_ten_dn);
-            txtMatKhau = itemView.findViewById(R.id.txt_mat_khau);
+            txtGmail = itemView.findViewById(R.id.txt_Gmail); // Ánh xạ TextView cho Gmail
             imgSua = itemView.findViewById(R.id.img_sua_khachHang);
             imgXoa = itemView.findViewById(R.id.img_xoa_khachHang);
         }
     }
+
 
 //trl line
 }

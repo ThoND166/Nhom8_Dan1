@@ -33,11 +33,11 @@
         android:layout_marginTop="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edt_password"
+            android:id="@+id/edt_gmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập mật khẩu"
-            android:inputType="textPassword" />
+            android:hint="Nhập Gmail"
+            android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
