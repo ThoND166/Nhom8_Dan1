@@ -13,13 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thondph16247.nhom8.DAO.GioHangDAO;
-import com.thondph16247.nhom8.DAO.SanPhamDAO;
 import com.thondph16247.nhom8.DTO.GioHangDTO;
-import com.thondph16247.nhom8.DTO.LoaiTraiCayDTO;
+import com.thondph16247.nhom8.Fragments.GioHang_Frag;
 import com.thondph16247.nhom8.R;
 
 import java.util.ArrayList;
@@ -29,14 +27,14 @@ public class GioHangAdapter extends  RecyclerView.Adapter<GioHangAdapter.ViewHol
     private Context mContext;
     private ArrayList<GioHangDTO> mList;
 
+    private GioHang_Frag gioHangFragment;
 
-
-
-
-    public GioHangAdapter(Context context, ArrayList<GioHangDTO> list) {
+    public GioHangAdapter(Context context, ArrayList<GioHangDTO> listGioHang, GioHang_Frag gioHangFragment) {
         this.mContext = context;
-        this.mList = list;
+        this.mList = listGioHang;
+        this.gioHangFragment = gioHangFragment;
     }
+
     public void updateData(ArrayList<GioHangDTO> newData) {
         mList.clear();
         mList.addAll(newData);
@@ -76,6 +74,9 @@ public class GioHangAdapter extends  RecyclerView.Adapter<GioHangAdapter.ViewHol
                             notifyDataSetChanged();
                             Toast.makeText(mContext, "Xóa thành công", Toast.LENGTH_SHORT).show();
 
+                            // Gọi phương thức updateTotalPrice() từ GioHang_Frag
+                            gioHangFragment.updateTotalPrice();
+
                             dialog.dismiss();
                         } else {
                             Toast.makeText(mContext, "Xóa thất bại", Toast.LENGTH_SHORT).show();
@@ -90,6 +91,8 @@ public class GioHangAdapter extends  RecyclerView.Adapter<GioHangAdapter.ViewHol
                 builder.show();
             }
         });
+
+
 
 
     }
