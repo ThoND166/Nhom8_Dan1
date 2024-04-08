@@ -30,4 +30,10 @@ public class DoanhThu_Frag extends Fragment {
 
         return view;
     }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 }

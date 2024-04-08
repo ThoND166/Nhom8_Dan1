@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thondph16247.nhom8.DAO.GioHangDAO;
 import com.thondph16247.nhom8.DTO.GioHangDTO;
+import com.thondph16247.nhom8.DAO.SanPhamDAO;
+import com.thondph16247.nhom8.DTO.LoaiTraiCayDTO;
 import com.thondph16247.nhom8.Fragments.GioHang_Frag;
 import com.thondph16247.nhom8.R;
 

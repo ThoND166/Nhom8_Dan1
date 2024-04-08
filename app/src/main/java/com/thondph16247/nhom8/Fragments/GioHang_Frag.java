@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thondph16247.nhom8.Adapters.GioHangAdapter;
+import com.thondph16247.nhom8.Adapters.HoaDonAdapter;
 import com.thondph16247.nhom8.Adapters.LoaiTraiCayAdapter;
 import com.thondph16247.nhom8.DAO.GioHangDAO;
 import com.thondph16247.nhom8.DAO.HoaDonDAO;
@@ -51,7 +52,7 @@ public class GioHang_Frag extends Fragment {
     HoaDonDAO hoaDonDAO;
 
     Button btn_thanhToan;
-
+    private ArrayList<HoaDonDTO> listHoaDon = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,7 +79,28 @@ public class GioHang_Frag extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Thực hiện thanh toán ở đây
+                        // Tạo hóa đơn từ giỏ hàng
+                        hoaDonDAO = new HoaDonDAO(getContext());
+                        for (GioHangDTO gioHangDTO : listGioHang) {
+                            HoaDonDTO hoaDonDTO = new HoaDonDTO();
+                            hoaDonDTO.setTenDN("Tho");
+                            hoaDonDTO.setTenSP(gioHangDTO.getTenSP());
+                            hoaDonDTO.setSoLuong(gioHangDTO.getSoLuongGioHang());
+                            hoaDonDTO.setGiaTienMoi(gioHangDTO.getGiaTienMoi());
+                            // Thêm hóa đơn vào cơ sở dữ liệu
+                            long result = hoaDonDAO.themHoaDon(hoaDonDTO);
+                            if (result != -1) {
+                                listHoaDon.add(hoaDonDTO);
+                                Toast.makeText(getContext(),"Thanh toán thành công",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        // Hiển thị danh sách hóa đơn trong RecyclerView
+                        HoaDonAdapter hoaDonAdapter = new HoaDonAdapter(getContext(), listHoaDon);
+                        rcv_gioHang.setLayoutManager(new LinearLayoutManager(getContext()));
+                        rcv_gioHang.setAdapter(hoaDonAdapter);
 
+                        // Xóa giỏ hàng sau khi đã thanh toán
+                        gioHangDAO.xoaTatCa();
                         // Sau khi thanh toán, bạn cần cập nhật lại danh sách giỏ hàng
                         listGioHang.clear();
                         listGioHang.addAll(gioHangDAO.getList());
@@ -86,6 +108,14 @@ public class GioHang_Frag extends Fragment {
 
                         // Cập nhật tổng tiền sau khi thanh toán
                         updateTotalPrice();
+
+                        // Chuyển sang fragment hóa đơn
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        HoaDon_Frag newFragment = new HoaDon_Frag(); // Khởi tạo fragment mới (cần thay thế bằng tên fragment thực tế của bạn)
+                        fragmentTransaction.replace(R.id.frag_container001, newFragment); // R.id.fragment_container là ID của container fragment trong layout của bạn
+                        fragmentTransaction.addToBackStack(null); // Để có thể quay trở lại fragment trước đó
+                        fragmentTransaction.commit();
                     }
                 }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
                     @Override
