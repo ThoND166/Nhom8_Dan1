@@ -2,12 +2,13 @@
 
     public class DangKyDTO {
         int id;
-        String tenDN, matKhau;
+        String tenDN, matKhau, gmail;
 
-        public DangKyDTO(String tenDN, String matKhau) {
+        public DangKyDTO(String tenDN, String matKhau, String gmail) {
             this.id = id;
             this.tenDN = tenDN;
             this.matKhau = matKhau;
+            this.gmail = gmail;
         }
 
         public DangKyDTO() {
@@ -36,5 +37,14 @@
         public void setMatKhau(String matKhau) {
             this.matKhau = matKhau;
         }
+
+        public String getGmail() {
+            return gmail;
+        }
+
+        public void setGmail(String gmail) {this.gmail = gmail;
+        }
+
+
     }
     //trl
