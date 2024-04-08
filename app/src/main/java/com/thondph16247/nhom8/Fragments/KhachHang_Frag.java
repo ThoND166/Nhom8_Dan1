@@ -30,7 +30,6 @@ public class KhachHang_Frag extends Fragment  {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.khach_hang_fragment, container, false);
         rcv_khachHang = view.findViewById(R.id.rcv_khachHang);
-
         dangKyDAO = new DangKyDAO(getContext());
         listKhachHang = dangKyDAO.getList();
         khachHangAdapter = new KhachHangAdapter(getContext(), listKhachHang);
@@ -39,5 +38,5 @@ public class KhachHang_Frag extends Fragment  {
         rcv_khachHang.setAdapter(khachHangAdapter);
         return view;
     }
-//trl
+
 }

@@ -24,6 +24,7 @@ public class DangKyDAO {
         ContentValues values = new ContentValues();
         values.put("tenDN", dto.getTenDN());
         values.put("matKhau", dto.getMatKhau());
+        values.put("gmail", dto.getGmail());
         long kq = database.insert("tb_dky", null, values);
         return kq;
     }
@@ -33,14 +34,15 @@ public class DangKyDAO {
         ContentValues values = new ContentValues();
         values.put("tenDN", dto.getTenDN());
         values.put("matKhau", dto.getMatKhau());
+        values.put("gmail", dto.getGmail());
         return database.update("tb_dky", values, "id = ?", new String[]{String.valueOf(dto.getId())});
     }
 
-    public boolean checkLogin(String tenDN, String mk) {
+    public boolean checkLogin(String tenDN, String mk, String gmail) {
         String[] columns = {"id"};
 
-        String selection = "tenDN                 = ? AND matKhau = ?";
-        String[] selectionArgs = {tenDN, mk};
+        String selection = "tenDN                 = ? AND matKhau = ? AND gmail= ? "  ;
+        String[] selectionArgs = {tenDN, mk, gmail};
 
         Cursor cursor = database.query("tb_dky", columns, selection, selectionArgs, null, null, null);
 
@@ -63,7 +65,7 @@ public class DangKyDAO {
                 dangKyDTO.setId(cursor.getInt(0));
                 dangKyDTO.setTenDN(cursor.getString(1));
                 dangKyDTO.setMatKhau(cursor.getString(2));
-
+                dangKyDTO.setGmail(cursor.getString(3));
                 listKH.add(dangKyDTO);
 
             } while (cursor.moveToNext());
