@@ -139,32 +139,55 @@ public class SanPham_Frag extends Fragment {
             @Override
             public void onClick(View v) {
                 String tenSP = edt_tenSP.getText().toString().trim();
-                String soLuong = edt_soLuong.getText().toString().trim();
-                String giaTien = edt_giaTien.getText().toString().trim();
+                String soLuongStr = edt_soLuong.getText().toString().trim();
+                String giaTienStr = edt_giaTien.getText().toString().trim();
                 String moTa = edt_moTa.getText().toString().trim();
-                LoaiTraiCayDTO selectedLoaiSP = (LoaiTraiCayDTO) sp_sp.getSelectedItem(); // Lấy loại sản phẩm đã chọn từ Spinner
+                LoaiTraiCayDTO selectedLoaiSP = (LoaiTraiCayDTO) sp_sp.getSelectedItem();
 
-                // Kiểm tra selectedLoaiSP có null hay không
                 if (selectedLoaiSP == null) {
                     Toast.makeText(getContext(), "Vui lòng chọn loại sản phẩm", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Kiểm tra và xác thực dữ liệu
-                if (tenSP.isEmpty() || soLuong.isEmpty() || giaTien.isEmpty()) {
+                if (tenSP.isEmpty() || soLuongStr.isEmpty() || giaTienStr.isEmpty()) {
                     Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Thêm sản phẩm vào cơ sở dữ liệu
-                SanPhamDTO sanPhamDTO = new SanPhamDTO(-1, tenSP, soLuong, giaTien, moTa, selectedLoaiSP.getTenLoai());
+                int soLuong;
+                double giaTien;
+
+                try {
+                    soLuong = Integer.parseInt(soLuongStr);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Số lượng phải là số", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    giaTien = Double.parseDouble(giaTienStr);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Giá tiền phải là số", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (soLuong <= 0) {
+                    Toast.makeText(getContext(), "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (giaTien <= 0) {
+                    Toast.makeText(getContext(), "Giá tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                SanPhamDTO sanPhamDTO = new SanPhamDTO(-1, tenSP, String.valueOf(soLuong), String.valueOf(giaTien), moTa, selectedLoaiSP.getTenLoai());
                 long isSuccess = sanPhamDAO.ThemSanPham(sanPhamDTO);
 
                 if (isSuccess != -1) {
                     Toast.makeText(getContext(), "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
 
-                    // Cập nhật danh sách sản phẩm
                     listSP.clear();
                     listSP.addAll(sanPhamDAO.getList());
                     sanPhamAdapter.notifyDataSetChanged();
@@ -173,6 +196,9 @@ public class SanPham_Frag extends Fragment {
                 }
             }
         });
+
+
+
 
         btn_huy.setOnClickListener(new View.OnClickListener() {
             @Override

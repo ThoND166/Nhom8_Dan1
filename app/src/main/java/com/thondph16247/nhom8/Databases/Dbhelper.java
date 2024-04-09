@@ -16,7 +16,7 @@
             // Đăng ký, đăng nhập nhé
             db.execSQL("CREATE TABLE tb_dky (id INTEGER PRIMARY KEY AUTOINCREMENT, tenDN TEXT NOT NULL, matKhau TEXT NOT NULL, gmail TEXT NOT NULL)");
             db.execSQL("INSERT INTO tb_dky (tenDN, matKhau, gmail) VALUES ('admin', 'admin' , 'admin@gmail.com')");
-            db.execSQL("INSERT INTO tb_dky (tenDN, matKhau, gmail) VALUES ('tho', '1', 'tho@gmail.com')");
+            db.execSQL("INSERT INTO tb_dky (tenDN, matKhau, gmail) VALUES ('tho', '123', 'tho@gmail.com')");
 
             //bảng snar phẩm
             db.execSQL("CREATE TABLE tb_sanPham (id INTEGER PRIMARY KEY AUTOINCREMENT, tenSP TEXT, soLuong TEXT, giaTien TEXT, moTa TEXT, tenLoai TEXT);");
@@ -28,9 +28,6 @@
 
     //        //baảng thanh toán
             db.execSQL("CREATE TABLE tb_hoaDon (id INTEGER PRIMARY KEY AUTOINCREMENT, tenDN TEXT, tenSP TEXT, soLuong TEXT, giaTienMoi TEXT);");
-            db.execSQL("INSERT INTO tb_hoaDon (tenDN, tenSP, soLuong, giaTienMoi) VALUES ('user1', 'Sản phẩm A', '3', '120000');");
-            db.execSQL("INSERT INTO tb_hoaDon (tenDN, tenSP, soLuong, giaTienMoi) VALUES ('user2', 'Sản phẩm B', '2', '150000');");
-
 
 
 

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,23 +19,35 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.thondph16247.nhom8.DAO.GioHangDAO;
+import com.thondph16247.nhom8.DAO.HoaDonDAO;
 import com.thondph16247.nhom8.DAO.LoaiTraiCayDAO;
 import com.thondph16247.nhom8.DAO.SanPhamDAO;
 import com.thondph16247.nhom8.DTO.GioHangDTO;
+import com.thondph16247.nhom8.DTO.HoaDonDTO;
 import com.thondph16247.nhom8.DTO.LoaiTraiCayDTO;
 import com.thondph16247.nhom8.DTO.SanPhamDTO;
+import com.thondph16247.nhom8.Fragments.HoaDon_Frag;
 import com.thondph16247.nhom8.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHolder> {
 
     private Context mContext;
     ArrayList<SanPhamDTO> listSP;
+    private ArrayList<HoaDonDTO> listHoaDon = new ArrayList<>();
+    HoaDonDAO hoaDonDAO;
+
+
 
 
     public SanPhamAdapter(Context mContext, ArrayList<SanPhamDTO> listSP) {
@@ -53,6 +66,8 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
         View view = inflater.inflate(R.layout.item_san_pham, parent, false);
+        hoaDonDAO = new HoaDonDAO(mContext);
+        listHoaDon= hoaDonDAO.getList();
         return new SanPhamAdapter.ViewHolder(view);
     }
 
@@ -223,30 +238,41 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
                     public void onClick(View v) {
                         String soLuong = edt_soLuong.getText().toString().trim();
 
+                        // Kiểm tra soLuong có phải là số hay không
+                        try {
+                            int soLuongInt = Integer.parseInt(soLuong);
+
+                            // Kiểm tra soLuongInt có lớn hơn 0 hay không
+                            if (soLuongInt <= 0) {
+                                Toast.makeText(mContext, "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                                return; // Dừng lại nếu soLuongInt không lớn hơn 0
+                            }
+
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(mContext, "Số lượng phải là số", Toast.LENGTH_SHORT).show();
+                            return; // Dừng lại nếu soLuong không phải là số
+                        }
+
+
+
 
                         int position = holder.getAdapterPosition();
 
-
                         if (position != RecyclerView.NO_POSITION) {
-
                             int idSanPham = listSP.get(position).getId();
-
 
                             SanPhamDTO sanPhamDTO = new SanPhamDAO(mContext).getSanPhamById(idSanPham);
 
                             if (sanPhamDTO != null) {
-
                                 int giaTien = Integer.parseInt(sanPhamDTO.getGiaTien());
                                 int soLuongInt = Integer.parseInt(soLuong);
                                 int giaTienMoi = giaTien * soLuongInt;
-
 
                                 GioHangDTO gioHangDTO = new GioHangDTO();
                                 gioHangDTO.setTenSP(sanPhamDTO.getTenSP());
                                 gioHangDTO.setGiaTien(String.valueOf(giaTien));
                                 gioHangDTO.setSoLuongGioHang(soLuong);
                                 gioHangDTO.setGiaTienMoi(String.valueOf(giaTienMoi));
-
 
                                 long result = new GioHangDAO(mContext).ThemGioHang(gioHangDTO);
 
@@ -262,8 +288,8 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
 
                         dialog.dismiss();
                     }
-
                 });
+
 
 
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -277,10 +303,84 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
                 Dialog dialog = new Dialog(mContext);
                 dialog.setContentView(R.layout.dialog_mua_sp);
 
+                TextInputEditText edt_soLuong = dialog.findViewById(R.id.edt_soLuong_gioHang);
+                Button btnThanhToan = dialog.findViewById(R.id.btn_them_gio_hang);
+                btnThanhToan.setText("Thanh toán");
+
+                btnThanhToan.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String soLuong = edt_soLuong.getText().toString().trim();
+
+                        // Kiểm tra soLuong có phải là số hay không
+                        int soLuongInt;
+                        try {
+                            soLuongInt = Integer.parseInt(soLuong);
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(mContext, "Số lượng phải là số", Toast.LENGTH_SHORT).show();
+                            return; // Dừng lại nếu soLuong không phải là số
+                        }
+
+                        // Kiểm tra soLuongInt có lớn hơn 0 hay không
+                        if (soLuongInt <= 0) {
+                            Toast.makeText(mContext, "Số lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                            return; // Dừng lại nếu soLuongInt không lớn hơn 0
+                        }
+
+                        int position = holder.getAdapterPosition();
+
+                        if (position != RecyclerView.NO_POSITION) {
+                            int idSanPham = listSP.get(position).getId();
+
+                            SanPhamDTO sanPhamDTO = new SanPhamDAO(mContext).getSanPhamById(idSanPham);
+
+                            if (sanPhamDTO != null) {
+                                int giaTien = Integer.parseInt(sanPhamDTO.getGiaTien());
+                                int giaTienMoi = giaTien * soLuongInt;
+
+                                GioHangDTO gioHangDTO = new GioHangDTO();
+                                gioHangDTO.setTenSP(sanPhamDTO.getTenSP());
+                                gioHangDTO.setGiaTien(String.valueOf(giaTien));
+                                gioHangDTO.setSoLuongGioHang(soLuong);
+                                gioHangDTO.setGiaTienMoi(String.valueOf(giaTienMoi));
+
+                                HoaDonDTO hoaDonDTO = new HoaDonDTO();
+                                hoaDonDTO.setTenDN(sharedPreferences.getString("tenDN", ""));
+                                hoaDonDTO.setTenSP(sanPhamDTO.getTenSP());
+                                hoaDonDTO.setSoLuong(soLuong);
+                                hoaDonDTO.setGiaTienMoi(String.valueOf(giaTienMoi));
+
+                                long kq = hoaDonDAO.themHoaDon(hoaDonDTO);
+
+                                if (kq > 0) {
+                                    Toast.makeText(mContext, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+
+                                    FragmentManager fragmentManager = ((FragmentActivity) mContext).getSupportFragmentManager();
+                                    HoaDon_Frag fragment_hoaDon = new HoaDon_Frag();
+                                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                    transaction.replace(R.id.frag_container001, fragment_hoaDon);
+                                    transaction.addToBackStack(null);
+                                    transaction.commit();
+                                } else {
+                                    Toast.makeText(mContext, "Thanh toán thất bại", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(mContext, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        dialog.dismiss();
+                    }
+                });
+
+
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.show();
             }
         });
+
+
+
 
 
     }

@@ -88,6 +88,7 @@ public class KhachHangAdapter extends RecyclerView.Adapter<KhachHangAdapter.View
                 Button btnHuy = dialog.findViewById(R.id.btn_huy_khachhang);
 
                 edtTenTK.setText(dangKyDTO.getTenDN());
+                edtGmail.setText(dangKyDTO.getGmail());
                 btnOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
