@@ -51,15 +51,14 @@ public class DangNhapActivity extends AppCompatActivity {
                 String tenDN = edt_TenDn.getText().toString();
                 String mk = edt_matKhau.getText().toString();
                 String gmail = edt_gmail.getText().toString();
+                String selectedRole = spn_quyen.getSelectedItem().toString(); // Lấy giá trị được chọn từ Spinner
                 DangKyDAO dao = new DangKyDAO(getApplicationContext());
                 boolean loggedIn = dao.checkLogin(tenDN, mk, gmail);
-
-                String selectedRole = spn_quyen.getSelectedItem().toString();
                 boolean isAdmin = "Admin".equals(selectedRole);
 
                 if (chkLuuMK.isChecked()) {
-                    saveLoginInfo(tenDN, mk, gmail);
-                    saveLoginInfo(isAdmin);
+                    saveLoginInfo(tenDN, mk, gmail); // Lưu thông tin đăng nhập
+                    saveLoginInfo(isAdmin); // Lưu giá trị quyền
                 } else {
                     clearLoginInfo();
                 }
@@ -72,6 +71,13 @@ public class DangNhapActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+
+
+
+
 
         btnDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,13 +92,21 @@ public class DangNhapActivity extends AppCompatActivity {
         String tenDN = sharedPreferences.getString("tenDN", "");
         String matKhau = sharedPreferences.getString("matKhau", "");
         String gmail = sharedPreferences.getString("gmail", "");
+        String quyen = sharedPreferences.getString("quyen", "Người dùng"); // Mặc định là Người dùng
         boolean isRemembered = sharedPreferences.getBoolean("isRemembered", false);
 
         edt_TenDn.setText(tenDN);
         edt_matKhau.setText(matKhau);
         edt_gmail.setText(gmail);
         chkLuuMK.setChecked(isRemembered);
+
+        if ("Admin".equals(quyen)) {
+            spn_quyen.setSelection(0); // Chọn quyền Admin
+        } else {
+            spn_quyen.setSelection(1); // Chọn quyền Người dùng
+        }
     }
+
 
     private void saveLoginInfo(String tenDN, String matKhau, String gmail) {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
@@ -103,6 +117,7 @@ public class DangNhapActivity extends AppCompatActivity {
         editor.putBoolean("isRemembered", true);
         editor.apply();
     }
+
 
     private void clearLoginInfo() {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
@@ -117,7 +132,15 @@ public class DangNhapActivity extends AppCompatActivity {
     private void saveLoginInfo(boolean isAdmin) {
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isAdmin", isAdmin);
+        if (isAdmin) {
+            editor.putString("quyen", "Admin"); // Lưu quyền Admin vào SharedPreferences
+            editor.putBoolean("isAdmin", true);
+        } else {
+            editor.putString("quyen", "Người dùng"); // Lưu quyền Người dùng vào SharedPreferences
+            editor.remove("isAdmin"); // Xóa giá trị isAdmin nếu không phải admin
+        }
         editor.apply();
     }
+
+
 }
