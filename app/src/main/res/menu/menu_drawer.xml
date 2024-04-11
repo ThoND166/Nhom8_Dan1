@@ -29,6 +29,10 @@
         android:icon="@drawable/doanhthu"
         android:title="Doanh Thu"/>
 
+    <item android:id="@+id/nav_ThongKe"
+        android:icon="@drawable/thong_ke"
+        android:title="Thống kê"/>
+
 
 
 

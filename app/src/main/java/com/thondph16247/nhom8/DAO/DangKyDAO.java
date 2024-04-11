@@ -38,11 +38,11 @@ public class DangKyDAO {
         return database.update("tb_dky", values, "id = ?", new String[]{String.valueOf(dto.getId())});
     }
 
-    public boolean checkLogin(String tenDN, String mk, String gmail) {
+    public boolean checkLogin(String tenDN, String mk) {
         String[] columns = {"id"};
 
-        String selection = "tenDN                 = ? AND matKhau = ? AND gmail= ? "  ;
-        String[] selectionArgs = {tenDN, mk, gmail};
+        String selection = "tenDN = ? AND matKhau = ?";
+        String[] selectionArgs = {tenDN, mk};
 
         Cursor cursor = database.query("tb_dky", columns, selection, selectionArgs, null, null, null);
 
@@ -54,6 +54,7 @@ public class DangKyDAO {
 
         return loginSuccessful;
     }
+
 
     public ArrayList<DangKyDTO> getList(){
         ArrayList<DangKyDTO> listKH = new ArrayList<>();
